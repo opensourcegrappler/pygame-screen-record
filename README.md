@@ -1,7 +1,7 @@
 #Screen record your PyGame
 
 This is a simple script for using Ffmpeg to screen capture
-a python application. Unfortunately no audio recording is
+a PyGame application. Unfortunately no audio recording is
 included...sorry.
 
 Some further description of the code is provided
