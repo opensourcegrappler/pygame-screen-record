@@ -1,12 +1,7 @@
-import array
-import math
 
-import cairo
 import pygame
-import rsvg
 import numpy as np
 import subprocess as sp
-import time
 import cv2
 
 WIDTH = 384
@@ -26,20 +21,13 @@ proc = sp.Popen(['ffmpeg',
              '-vcodec', 'qtrle',
                  'newvideo.mov'], stdin=sp.PIPE)
 
-#initialise a cairo surface ready for the svg, 4 channel (rgba)
-data = array.array('c', chr(0) * WIDTH * HEIGHT * 4)
-surface = cairo.ImageSurface.create_for_data(
-    data, cairo.FORMAT_ARGB32, WIDTH, HEIGHT, WIDTH * 4)
-
 #initialise the pygame window
 pygame.init()
 window = pygame.display.set_mode((WIDTH, HEIGHT))
-svg = rsvg.Handle(file="guage.svg")
-ctx = cairo.Context(surface)
-svg.render_cairo(ctx)
 
 screen = pygame.display.get_surface()
-image = pygame.image.frombuffer(data.tostring(), (WIDTH, HEIGHT),"ARGB")
+image = pygame.image.load("guage.svg")
+font = pygame.font.SysFont("dinnextltpro", HEIGHT//5)
 
 #initialise array of example data to feed guage
 xx = np.linspace(1,360,360)
@@ -57,7 +45,6 @@ while True:
     roll = float(xx[i])
         
     #create some text and blit it to the screen
-    font = pygame.font.SysFont("dinnextltpro", HEIGHT/5)
     text = font.render(str(int(abs(roll))), 1, (255,255,255,255))
     textpos = text.get_rect()
     textpos.center = (WIDTH*(0.85),HEIGHT*(0.85))
@@ -98,7 +85,7 @@ while True:
     proc.stdin.write(rotatedMergedImage)
 
     #break the main loop if the end of the data is reached
-    if i> len(xx):
+    if i>= len(xx)-1:
         break
     else:
         i += 1
